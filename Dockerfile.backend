@@ -20,7 +20,8 @@ CMD ["npm", "start"]
 # System Dependencies
 ############################################
 # Update package index and install necessary system packages
-RUN apk update && apk add --no-cache dos2unix
+RUN apk update && apk add --no-cache dos2unix \
+    python3 build-base # not strictly necessary, but allows for fallback build if requests to Github fail
 
 ############################################
 # Setup non-root user
@@ -41,7 +42,7 @@ USER node
 # Build Application
 ############################################
 # Install npm dependencies
-RUN npm install
+RUN npm install  --loglevel verbose
 
 # Convert entrypoint scripts to Unix format
 RUN dos2unix entrypoints/*

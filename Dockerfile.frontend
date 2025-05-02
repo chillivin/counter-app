@@ -20,7 +20,8 @@ ENTRYPOINT ["./entrypoint.sh"]
 # Install system dependencies
 ############################################
 # Update package index and install necessary system packages
-RUN apk update && apk add --no-cache gettext dos2unix
+RUN apk update && apk add --no-cache gettext dos2unix \
+    python3 build-base # not strictly necessary, but allows for fallback build if requests to Github fail
 
 ############################################
 # Setup non-root user
