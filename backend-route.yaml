@@ -1,12 +1,33 @@
-apiVersion: route.openshift.io/v1
 kind: Route
+apiVersion: route.openshift.io/v1
 metadata:
   name: counter-backend
+  labels:
+    app: counter-app
+    app.kubernetes.io/part-of: counter-app
 spec:
   to:
     kind: Service
     name: counter-backend
   port:
-    targetPort: 8080
+    targetPort: counter-backend
   tls:
     termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: counter-frontend
+  labels:
+    app: counter-app
+    app.kubernetes.io/part-of: counter-app
+spec:
+  to:
+    kind: Service
+    name: counter-frontend
+  port:
+    targetPort: counter-frontend
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

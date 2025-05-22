@@ -2,6 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: counter-backend
+  labels:
+    app: counter-app
+    app.kubernetes.io/part-of: counter-app
 spec:
   replicas: 1
   selector:
@@ -14,27 +17,35 @@ spec:
     spec:
       containers:
         - name: counter-backend
-          image: ghcr.io/leon99ardo/counter-backend:v1
-          ports:
-            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
           env:
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
                   name: counter-database
                   key: database-user
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: counter-database
-                  key: database-password
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
                   name: counter-database
                   key: database-name
-            - name: DB_HOST
+            - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: counter-database
-                  key: database-host
+                  key: database-password
+            - name: DB_HOST
+              value: counter-database
+            - name: npm_config_cache
+              value: ./.npm-cache
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          image: 'ghcr.io/thi-bue/counter-backend:v1'
+          imagePullPolicy: Always
